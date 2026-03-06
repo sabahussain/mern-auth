@@ -1,19 +1,20 @@
+const dotenv = require("dotenv").config();
 const express = require("express");
 const path = require("path");
 const cors = require("cors");
-const dotenv = require("dotenv");
 const mongoose = require("mongoose");
-const route = require("./routes/auth");
-dotenv.config();
+const authrouter = require("./routes/auth");
+const cookieParser = require("cookie-parser");
 const app = express();
 app.use(express.json());
-app.use(cors());
+app.use(cookieParser());
+app.use(cors({ credentials: true }));
 
 mongoose.connect(process.env.MONGO_URI).then(() => {
   console.log("MONGODB Connected");
 });
 
-app.use("/api/auth", route);
+app.use("/api/auth", authrouter);
 
 app.use(express.static(path.join(__dirname, "frontend/dist")));
 
